@@ -65,10 +65,18 @@ try:
 except Exception, e:
     sys.stderr.write("Error: cannot parse SW4STM32 .project file: %s\r\n" % ac6_project)
     sys.exit(C2M_ERR_PROJECT_FILE)
-nodes = root.findall('linkedResources/link[type=\'1\']/location')
+nodes = root.findall('linkedResources/link')
 sources = []
 for node in nodes:
-    sources.append(re.sub(r'^PARENT-2-PROJECT_LOC/', '', node.text))
+    name = node.find('name').text
+    location = node.find('location').text
+    first_str=""
+    found = re.search('.*User.*', name)
+    if found:
+        first_str = "./"
+    else:
+        first_str="/"
+    sources.append(re.sub(r'^PARENT-2-PROJECT_LOC/', first_str, location))
 sources=list(set(sources))
 sources.sort()
 c_sources = 'C_SOURCES ='
