@@ -21,12 +21,14 @@ OPT = -O0
 # source path
 # Build path
 BUILD_DIR = build
+PRJ_PATH = $PRJ_PATH
+REPO_PATH = $REPO_PATH
 
 ######################################
 # source
 ######################################
-$C_SOURCES  
-$ASM_SOURCES
+C_SOURCES = $C_SOURCES  
+ASM_SOURCES = $ASM_SOURCES
 
 #######################################
 # binaries
@@ -43,11 +45,11 @@ BIN = $$(CP) -O binary -S
 # CFLAGS
 #######################################
 # macros for gcc
-$AS_DEFS
-$C_DEFS
+ASM_DEFS = $ASM_DEFS
+C_DEFS = $C_DEFS
 # includes for gcc
-$AS_INCLUDES
-$C_INCLUDES
+ASM_INCLUDES = $ASM_INCLUDES
+C_INCLUDES = $C_INCLUDES
 # compile gcc flags
 ASFLAGS = $MCU $$(AS_DEFS) $$(AS_INCLUDES) $$(OPT) -Wall -fdata-sections -ffunction-sections
 CFLAGS = $MCU $$(C_DEFS) $$(C_INCLUDES) $$(OPT) -Wall -fdata-sections -ffunction-sections
@@ -61,7 +63,7 @@ CFLAGS += -MD -MP -MF .dep/$$(@F).d
 # LDFLAGS
 #######################################
 # link script
-$LDSCRIPT
+LDSCRIPT = $LDSCRIPT
 # libraries
 LIBS = -lc -lm -lnosys
 LIBDIR =
