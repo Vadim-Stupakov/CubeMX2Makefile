@@ -75,17 +75,11 @@ except Exception, e:
 nodes = root.findall('linkedResources/link')
 sources = []
 for node in nodes:
-    name = node.find('name').text
     location = node.find('location').text
-    src_path=""
-    found = re.search('.*User.*', name)
-    if found:
-        src_path = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/', "/" , location)
-        src_path = "$(PRJ_PATH)" + src_path
-    else:
-        src_path = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/.*(Drivers/|Middlewares/)', "\\1" , location)
-        src_path = "$(REPO_PATH)/" + src_path
-    sources.append(src_path)
+    src_path = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/(Drivers/.*|Middlewares/.*|Src/.*)', "$(PRJ_PATH)/\\1" , location)
+    #location = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/.*Repository.*/(Drivers/.*|Middlewares/.*)', "$(REPO_PATH)/\\1" , location)
+    if src_path != location:
+        sources.append(src_path)
     
 sources=list(set(sources))
 sources.sort()
