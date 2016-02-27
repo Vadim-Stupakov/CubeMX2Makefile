@@ -56,12 +56,16 @@ if not os.path.isdir(reposytory_folder):
     sys.stderr.write("STM32CubeMX \"Reposytory location\" \"%s\" is not found\n" % proj_folder)
     sys.exit(C2M_ERR_INVALID_COMMANDLINE)
 
-
 proj_name = os.path.splitext(os.path.basename(proj_folder))[0]
-ac6_project = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + proj_name + ' Configuration' + os.path.sep + '.project'
-ac6_cproject = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + proj_name + ' Configuration' + os.path.sep + '.cproject'
+for root, dirs, files in os.walk(proj_folder + os.path.sep + "SW4STM32"):
+    for file in files:
+        if file == ".project":
+            ac6_project = root + os.path.sep + file
+        elif file== ".cproject":
+            ac6_cproject = root + os.path.sep + file
+
 if not (os.path.isfile(ac6_project) and os.path.isfile(ac6_cproject)):
-    sys.stderr.write("SW4STM32 project not found, use STM32CubeMX to generate a SW4STM32 project balownichok ))first\n")
+    sys.stderr.write("SW4STM32 project not found, use STM32CubeMX to generate a SW4STM32 project first\n")
     sys.exit(C2M_ERR_NO_PROJECT)
 
 
@@ -77,10 +81,9 @@ sources = []
 for node in nodes:
     location = node.find('location').text
     src_path = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/(Drivers/.*|Middlewares/.*|Src/.*)', "$(PRJ_PATH)/\\1" , location)
-    #location = re.sub(r'^PARENT-[0-9]-PROJECT_LOC/.*Repository.*/(Drivers/.*|Middlewares/.*)', "$(REPO_PATH)/\\1" , location)
     if src_path != location:
         sources.append(src_path)
-    
+
 sources=list(set(sources))
 sources.sort()
 c_sources = ' \\\n'
@@ -133,7 +136,7 @@ for node in nodes:
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Drivers\/', "$(REPO_PATH)/Drivers/", value)
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Middlewares\/', "$(REPO_PATH)/Middlewares/", value)
         asm_includes += "    -I" + value + " \\\n"
-asm_includes = asm_includes[:-2] + "\n" 
+asm_includes = asm_includes[:-2] + "\n"
 
 # AS symbols
 asm_defs = '\\\n'
@@ -159,7 +162,7 @@ for node in nodes:
 c_defs = c_defs[:-2] + "\n"
 
 # Link script
-ldscript = '' 
+ldscript = ''
 node = root.find('.//tool[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker"]/option[@superClass="fr.ac6.managedbuild.tool.gnu.cross.c.linker.script"]')
 try:
     value = node.attrib.get('value')
@@ -167,13 +170,14 @@ try:
     value = os.path.basename(value)
 except Exception, e:
     sys.stderr.write("No link script defined\n")
-    sys.exit(C2M_ERR_PROJECT_FILE) 
+    sys.exit(C2M_ERR_PROJECT_FILE)
 # copy link script to top level so that user can discard SW4STM32 folder
-src = proj_folder + os.path.sep + 'SW4STM32' + os.path.sep + proj_name + ' Configuration' + os.path.sep + value
+src = os.path.dirname(ac6_cproject) + os.path.sep + value
 dst = proj_folder + os.path.sep + value
+
 shutil.copyfile(src, dst)
 sys.stdout.write("File created: %s\n" % dst)
-ldscript += value  
+ldscript += value
 
 mf = mft.substitute( \
     TARGET = proj_name, \
