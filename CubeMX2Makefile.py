@@ -133,6 +133,8 @@ for node in nodes:
     value = node.attrib.get('value')
     if (value != ""):
         value = re.sub(r'((\.\.\/)*\.\./|^/)Inc$', "$(PRJ_PATH)/Inc", value)
+        value = re.sub(r'((\.\.\/)*\.\./)Drivers\/', "$(PRJ_PATH)/Drivers/", value)
+        value = re.sub(r'((\.\.\/)*\.\./)Middlewares\/', "$(PRJ_PATH)/Middlewares/", value)
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Drivers\/', "$(REPO_PATH)/Drivers/", value)
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Middlewares\/', "$(REPO_PATH)/Middlewares/", value)
         asm_includes += "    -I" + value + " \\\n"
@@ -147,6 +149,8 @@ for node in nodes:
     value = node.attrib.get('value')
     if (value != ""):
         value = re.sub(r'((\.\.\/)*\.\./|^/)Inc$', "$(PRJ_PATH)/Inc", value)
+        value = re.sub(r'((\.\.\/)*\.\./)Drivers\/', "$(PRJ_PATH)/Drivers/", value)
+        value = re.sub(r'((\.\.\/)*\.\./)Middlewares\/', "$(PRJ_PATH)/Middlewares/", value)
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Drivers\/', "$(REPO_PATH)/Drivers/", value)
         value = re.sub(r'((\.\.\/)*\.\./|^/root/.*/)Middlewares\/', "$(REPO_PATH)/Middlewares/", value)
         c_includes += "    -I" + value + " \\\n"
