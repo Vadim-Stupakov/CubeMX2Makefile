@@ -72,6 +72,28 @@ LDFLAGS = $LDMCU -specs=nano.specs -T$$(LDSCRIPT) $$(LIBDIR) $$(LIBS) -Wl,-Map=$
 # default action: build all
 all: $$(BUILD_DIR)/$$(TARGET).elf $$(BUILD_DIR)/$$(TARGET).hex $$(BUILD_DIR)/$$(TARGET).bin
 
+#######################################################
+# Printing variables needed for generating any project
+#######################################################
+C_DEFS_PRINT:
+	@echo $$(C_DEFS)
+
+C_SOURCES_PRINT:
+	@echo $$(C_SOURCES)
+
+C_INCLUDES_PRINT:
+	@echo $$(C_INCLUDES)
+
+ASM_SOURCES_PRINT:
+	@echo $$(ASM_SOURCES)
+
+ASM_DEFS_PRINT:
+	@echo $$(ASM_DEFS)
+
+ASM_INCLUDES_PRINT:
+	@echo $$(ASM_INCLUDES)
+#######################################################
+
 #######################################
 # build the application
 #######################################
